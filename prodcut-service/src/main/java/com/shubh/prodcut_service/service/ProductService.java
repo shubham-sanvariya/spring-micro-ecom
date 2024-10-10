@@ -1,8 +1,12 @@
 package com.shubh.prodcut_service.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import com.shubh.prodcut_service.dto.ProductRequest;
+import com.shubh.prodcut_service.dto.ProductResponse;
 import com.shubh.prodcut_service.model.Product;
 import com.shubh.prodcut_service.repository.ProductRepository;
 
@@ -16,7 +20,7 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
-    public Product createProduct(ProductRequest productRequest) {
+    public ProductResponse createProduct(ProductRequest productRequest) {
         Product product = Product.builder()
                 .name(productRequest.name())
                 .description(productRequest.description())
@@ -24,6 +28,19 @@ public class ProductService {
                 .build();
 
         log.info("Product created successfully");
-        return productRepository.save(product);
+        productRepository.save(product);
+
+        return new ProductResponse(product.getId(), product.getName(), product.getDescription(), product.getPrice());
     }
+
+    public List<ProductResponse> getAllProducts() {
+        return productRepository.findAll()
+                .stream()
+                .map(product -> new ProductResponse(product.getId(),
+                        product.getName(),
+                        product.getDescription(),
+                        product.getPrice()))
+                .collect(Collectors.toList());
+    }
+
 }
