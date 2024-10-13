@@ -6,4 +6,5 @@ import com.shubh.inventory_service.model.Inventory;
 
 public interface InventoryRepository extends JpaRepository<Inventory,Long>{
     
+   boolean existsBySkuCodeAndQuantityIsGreaterThanEqual(String skuCode, Integer quantity);
 }
